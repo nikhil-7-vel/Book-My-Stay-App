@@ -1,96 +1,52 @@
-abstract class Room {
-    private String roomType;
-    private int beds;
-    private int size;
-    private double price;
 
-    // Constructor
-    public Room(String roomType, int beds, int size, double price) {
-        this.roomType = roomType;
-        this.beds = beds;
-        this.size = size;
-        this.price = price;
+// Inventory Class
+class RoomInventory {
+    private HashMap<String, Integer> inventory;
+
+    public RoomInventory() {
+        inventory = new HashMap<>();
+        inventory.put("Single Room", 5);
+        inventory.put("Double Room", 3);
+        inventory.put("Suite Room", 2);
     }
 
-    // Getters
-    public String getRoomType() { return roomType; }
-    public int getBeds() { return beds; }
-    public int getSize() { return size; }
-    public double getPrice() { return price; }
-
-    // Abstract method
-    public abstract void displayRoomDetails();
-}
-
-// Single Room
-class SingleRoom extends Room {
-    public SingleRoom() {
-        super("Single Room", 1, 250, 1000);
+    // Get availability of a room type
+    public int getAvailability(String roomType) {
+        return inventory.getOrDefault(roomType, 0);
     }
 
-    public void displayRoomDetails() {
-        System.out.println("Room Type: " + getRoomType());
-        System.out.println("Beds: " + getBeds());
-        System.out.println("Size: " + getSize() + " sqft");
-        System.out.println("Price per night: ₹" + getPrice());
+    // Decrement availability when a room is booked
+    public void decrement(String roomType) {
+        if (inventory.containsKey(roomType) && inventory.get(roomType) > 0) {
+            inventory.put(roomType, inventory.get(roomType) - 1);
+        }
     }
 }
 
-// Double Room
-class DoubleRoom extends Room {
-    public DoubleRoom() {
-        super("Double Room", 2, 400, 1800);
-    }
-
-    public void displayRoomDetails() {
-        System.out.println("Room Type: " + getRoomType());
-        System.out.println("Beds: " + getBeds());
-        System.out.println("Size: " + getSize() + " sqft");
-        System.out.println("Price per night: ₹" + getPrice());
-    }
-}
-
-// Suite Room
-class SuiteRoom extends Room {
-    public SuiteRoom() {
-        super("Suite Room", 3, 750, 3000);
-    }
-
-    public void displayRoomDetails() {
-        System.out.println("Room Type: " + getRoomType());
-        System.out.println("Beds: " + getBeds());
-        System.out.println("Size: " + getSize() + " sqft");
-        System.out.println("Price per night: ₹" + getPrice());
-    }
-}
-
-// Main Class (UC2)
-public class BookMystayApp {
+// Main Class (UC3)
+public class uc3CentralizedRoom {
 
     public static void main(String[] args) {
 
+        // Using UC2 Room classes
         Room single = new SingleRoom();
         Room doubleRoom = new DoubleRoom();
         Room suite = new SuiteRoom();
 
-        int singleAvailable = 5;
-        int doubleAvailable = 3;
-        int suiteAvailable = 2;
+        RoomInventory inventory = new RoomInventory();
 
-        System.out.println("===== Room Details & Availability =====\n");
+        System.out.println("===== Centralized Room Inventory =====\n");
 
         single.displayRoomDetails();
-        System.out.println("Available: " + singleAvailable);
+        System.out.println("Available: " + inventory.getAvailability(single.getRoomType()));
         System.out.println("--------------------------------------");
 
         doubleRoom.displayRoomDetails();
-        System.out.println("Available: " + doubleAvailable);
+        System.out.println("Available: " + inventory.getAvailability(doubleRoom.getRoomType()));
         System.out.println("--------------------------------------");
 
         suite.displayRoomDetails();
-        System.out.println("Available: " + suiteAvailable);
+        System.out.println("Available: " + inventory.getAvailability(suite.getRoomType()));
         System.out.println("--------------------------------------");
-
-        System.out.println("\nApplication Terminated.");
     }
 }
