@@ -1,41 +1,68 @@
 import java.util.*;
 
-// Search Service
-class RoomSearchService {
+// Reservation Class
+class Reservation {
+    private String guestName;
+    private String roomType;
 
-    public void searchRooms(List<Room> rooms, RoomInventory inventory) {
+    public Reservation(String guestName, String roomType) {
+        this.guestName = guestName;
+        this.roomType = roomType;
+    }
 
-        System.out.println("===== Room Search Results =====\n");
+    public String getGuestName() {
+        return guestName;
+    }
 
-        for (Room room : rooms) {
+    public String getRoomType() {
+        return roomType;
+    }
+}
 
-            int available = inventory.getAvailability(room.getRoomType());
+// Booking Queue
+class BookingRequestQueue {
 
-            // Show only rooms with availability
-            if (available > 0) {
-                room.displayRoomDetails();
-                System.out.println("Available: " + available);
-                System.out.println("--------------------------------------");
-            }
+    private Queue<Reservation> queue;
+
+    public BookingRequestQueue() {
+        queue = new LinkedList<>();
+    }
+
+    // Add request
+    public void addRequest(Reservation r) {
+        queue.offer(r);
+    }
+
+    // Process requests (FIFO)
+    public void processRequests() {
+        System.out.println("Booking Request Queue");
+
+        while (!queue.isEmpty()) {
+            Reservation r = queue.poll(); // FIFO removal
+
+            System.out.println(
+                    "Processing booking for Guest: " +
+                            r.getGuestName() +
+                            ", Room Type: " +
+                            r.getRoomType()
+            );
         }
     }
 }
 
-// Main UC4 class
-public class uc4RoomSearch {
+// Main Class
+public class BookMystayApp{
 
     public static void main(String[] args) {
 
-        List<Room> rooms = new ArrayList<>();
-        rooms.add(new SingleRoom());
-        rooms.add(new DoubleRoom());
-        rooms.add(new SuiteRoom());
+        BookingRequestQueue queue = new BookingRequestQueue();
 
-        // Use RoomInventory from UC3
-        RoomInventory inventory = new RoomInventory();
+        // Adding requests (arrival order)
+        queue.addRequest(new Reservation("Abhi", "Single"));
+        queue.addRequest(new Reservation("Subha", "Double"));
+        queue.addRequest(new Reservation("Vanmathi", "Suite"));
 
-        RoomSearchService service = new RoomSearchService();
-
-        service.searchRooms(rooms, inventory);
+        // Process queue
+        queue.processRequests();
     }
 }
