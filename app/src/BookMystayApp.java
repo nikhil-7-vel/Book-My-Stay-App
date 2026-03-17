@@ -1,52 +1,41 @@
+import java.util.*;
 
-// Inventory Class
-class RoomInventory {
-    private HashMap<String, Integer> inventory;
+// Search Service
+class RoomSearchService {
 
-    public RoomInventory() {
-        inventory = new HashMap<>();
-        inventory.put("Single Room", 5);
-        inventory.put("Double Room", 3);
-        inventory.put("Suite Room", 2);
-    }
+    public void searchRooms(List<Room> rooms, RoomInventory inventory) {
 
-    // Get availability of a room type
-    public int getAvailability(String roomType) {
-        return inventory.getOrDefault(roomType, 0);
-    }
+        System.out.println("===== Room Search Results =====\n");
 
-    // Decrement availability when a room is booked
-    public void decrement(String roomType) {
-        if (inventory.containsKey(roomType) && inventory.get(roomType) > 0) {
-            inventory.put(roomType, inventory.get(roomType) - 1);
+        for (Room room : rooms) {
+
+            int available = inventory.getAvailability(room.getRoomType());
+
+            // Show only rooms with availability
+            if (available > 0) {
+                room.displayRoomDetails();
+                System.out.println("Available: " + available);
+                System.out.println("--------------------------------------");
+            }
         }
     }
 }
 
-// Main Class (UC3)
-public class uc3CentralizedRoom {
+// Main UC4 class
+public class uc4RoomSearch {
 
     public static void main(String[] args) {
 
-        // Using UC2 Room classes
-        Room single = new SingleRoom();
-        Room doubleRoom = new DoubleRoom();
-        Room suite = new SuiteRoom();
+        List<Room> rooms = new ArrayList<>();
+        rooms.add(new SingleRoom());
+        rooms.add(new DoubleRoom());
+        rooms.add(new SuiteRoom());
 
+        // Use RoomInventory from UC3
         RoomInventory inventory = new RoomInventory();
 
-        System.out.println("===== Centralized Room Inventory =====\n");
+        RoomSearchService service = new RoomSearchService();
 
-        single.displayRoomDetails();
-        System.out.println("Available: " + inventory.getAvailability(single.getRoomType()));
-        System.out.println("--------------------------------------");
-
-        doubleRoom.displayRoomDetails();
-        System.out.println("Available: " + inventory.getAvailability(doubleRoom.getRoomType()));
-        System.out.println("--------------------------------------");
-
-        suite.displayRoomDetails();
-        System.out.println("Available: " + inventory.getAvailability(suite.getRoomType()));
-        System.out.println("--------------------------------------");
+        service.searchRooms(rooms, inventory);
     }
 }
